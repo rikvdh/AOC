@@ -14,9 +14,16 @@ func check(e error) {
 	}
 }
 
+type Visited struct {
+	coord string
+	x     int
+	y     int
+}
+
 var vertical int = 0
 var horizontal int = 0
 var direction int = 0
+var visited []Visited
 
 func main() {
 	dat, err := ioutil.ReadFile("input.txt")
@@ -26,6 +33,8 @@ func main() {
 	for k, str := range strs {
 		strs[k] = strings.Trim(str, "\n ")
 	}
+
+	visited = append(visited, Visited{"0x0", 0, 0})
 
 	fmt.Println(strs)
 	for _, str := range strs {
@@ -47,18 +56,43 @@ func main() {
 		dist, err := strconv.Atoi(str[1:])
 		check(err)
 
-		switch direction {
-		case 0:
-			vertical += dist
-		case 180:
-			vertical -= dist
-		case 90:
-			horizontal += dist
-		case 270:
-			horizontal -= dist
+		for {
+			switch direction {
+			case 0:
+				vertical += 1
+			case 180:
+				vertical -= 1
+			case 90:
+				horizontal += 1
+			case 270:
+				horizontal -= 1
+			}
+
+			visited = append(visited, Visited{
+				strconv.Itoa(horizontal) + "x" + strconv.Itoa(vertical),
+				horizontal,
+				vertical})
+
+			dist--
+			if dist == 0 {
+				break
+			}
 		}
 	}
 	fmt.Printf("Horizontal: %d\nVertical: %d\n", horizontal, vertical)
 	fmt.Printf("Easter Bunny HQ is %.0f blocks away\n",
 		math.Abs(float64(horizontal))+math.Abs(float64(vertical)))
+
+	var visCount map[string]int = make(map[string]int)
+
+	for _, coord := range visited {
+		if _, ok := visCount[coord.coord]; !ok {
+			visCount[coord.coord] = 1
+		} else if visCount[coord.coord] == 1 {
+			fmt.Println("Location ", coord.coord, " is first visited twice")
+			fmt.Printf("Easter Bunny HQ is really %.0f blocks away\n",
+				math.Abs(float64(coord.x))+math.Abs(float64(coord.y)))
+			break
+		}
+	}
 }

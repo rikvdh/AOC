@@ -1,15 +1,16 @@
 package main
 
 import (
-	"fmt"
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
+	"sort"
 	"strconv"
 	"sync"
-	"sort"
 )
 
 const Multiplier = 50000
+
 var wg sync.WaitGroup
 
 type HashesFound map[int64]string
@@ -22,7 +23,7 @@ func calcHash(DoorId string, x int64) {
 	var i int64 = 0
 
 	for i < 1000 {
-		index := x * 1000 + i
+		index := x*1000 + i
 		md5sum := md5.Sum([]byte(DoorId + strconv.FormatInt(index, 10)))
 		md5str := hex.EncodeToString(md5sum[0:16])
 		if md5str[:5] == "00000" {
@@ -61,7 +62,7 @@ func main() {
 	for _, k := range keys {
 		fmt.Println("Key:", k, "Value:", hashes[int64(k)])
 		code += hashes[int64(k)][5:6]
-		pos,err := strconv.Atoi(hashes[int64(k)][5:6])
+		pos, err := strconv.Atoi(hashes[int64(k)][5:6])
 		if err == nil {
 			val := hashes[int64(k)][6:7]
 			if code2[pos] == '-' {
@@ -70,5 +71,5 @@ func main() {
 		}
 	}
 	fmt.Println("Code is:", code[:8])
-	fmt.Println("2nd code is:",code2[:8])
+	fmt.Println("2nd code is:", code2[:8])
 }

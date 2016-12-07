@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"sort"
 	"io/ioutil"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -17,18 +17,18 @@ func check(e error) {
 type StringArray []string
 
 func (s StringArray) Len() int {
-    return len(s)
+	return len(s)
 }
 func (s StringArray) Swap(i, j int) {
-    s[i], s[j] = s[j], s[i]
+	s[i], s[j] = s[j], s[i]
 }
 func (s StringArray) Less(i, j int) bool {
-    return s[i][0] < s[j][0]
+	return s[i][0] < s[j][0]
 }
 
 type Room struct {
-	letters map[string]int
-	sector string
+	letters  map[string]int
+	sector   string
 	checksum string
 	realname string
 }
@@ -46,7 +46,7 @@ func getChecksum(letters map[string]int) string {
 
 	for maxfreq > 0 {
 		sortBuffer = sortBuffer[:0]
-		for letter,freq := range letters {
+		for letter, freq := range letters {
 			if freq == maxfreq {
 				sortBuffer = append(sortBuffer, letter)
 			}
@@ -56,7 +56,7 @@ func getChecksum(letters map[string]int) string {
 			checksumResult += letter
 		}
 		if len(checksumResult) >= 5 {
-			break;
+			break
 		}
 		maxfreq--
 	}
@@ -71,7 +71,7 @@ func getRoom(roomstr string) Room {
 		for len(part) > 0 {
 			if part[:1] == "[" {
 				r.checksum = part[1:6]
-				break;
+				break
 			} else if part[:1] >= "0" && part[:1] <= "9" {
 				r.sector += part[:1]
 			} else {
@@ -91,9 +91,9 @@ func getRoom(roomstr string) Room {
 		if letter == '-' {
 			r.realname += " "
 		} else if letter >= '0' && letter <= '9' {
-			break;
+			break
 		} else {
-			b := byte((int(letter) - 'a' + sectn) % 26 + 'a')
+			b := byte((int(letter)-'a'+sectn)%26 + 'a')
 			r.realname = string(append([]byte(r.realname), b))
 		}
 	}
@@ -120,10 +120,10 @@ func main() {
 				n, _ := strconv.Atoi(r.sector)
 				total += int64(n)
 				if r.realname == "northpole object storage " {
-					fmt.Println("Valid room", r.realname,r.sector)
+					fmt.Println("Valid room", r.realname, r.sector)
 				}
 			}
 		}
 	}
-	fmt.Println("Sectorsum:", total,"in", validRoomCount,"of",roomCount,"rooms")
+	fmt.Println("Sectorsum:", total, "in", validRoomCount, "of", roomCount, "rooms")
 }

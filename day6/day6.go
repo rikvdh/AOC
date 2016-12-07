@@ -2,9 +2,7 @@ package main
 
 import (
 	"fmt"
-	_ "sort"
 	"io/ioutil"
-	_ "strconv"
 	"strings"
 )
 
@@ -12,18 +10,6 @@ func check(e error) {
 	if e != nil {
 		panic(e)
 	}
-}
-
-type StringArray []string
-
-func (s StringArray) Len() int {
-    return len(s)
-}
-func (s StringArray) Swap(i, j int) {
-    s[i], s[j] = s[j], s[i]
-}
-func (s StringArray) Less(i, j int) bool {
-    return s[i][0] < s[j][0]
 }
 
 type Columns struct {
@@ -67,7 +53,7 @@ func main() {
 	var i int = 0
 	for i < len(lines[0]) {
 		cols[i].letters = make(map[byte]int)
-		i++;
+		i++
 	}
 
 	for _, line := range lines {
@@ -79,7 +65,7 @@ func main() {
 				} else {
 					cols[i].letters[line[i]] = 1
 				}
-				i++;
+				i++
 			}
 		}
 	}
@@ -90,7 +76,7 @@ func main() {
 	for i < len(lines[0]) {
 		msg += getMaxLetter(cols[i])
 		minmsg += getMinLetter(cols[i])
-		i++;
+		i++
 	}
 	fmt.Println(msg)
 	fmt.Println(minmsg)
